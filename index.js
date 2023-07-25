@@ -6,3 +6,5 @@ import './src/database.js'
 app.listen(process.env.PORT, () => {
     console.log(`app on port ${process.env.PORT}`) 
 })
+
+// tradingchatback-production.up.railway.app
