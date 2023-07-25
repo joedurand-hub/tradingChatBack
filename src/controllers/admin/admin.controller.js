@@ -37,7 +37,7 @@ export const signup = async (req, res, next) => {
                     // html: "<b>Hello world?</b>", // html body
                 });
                 console.log(user)
-                res.status(200).json({ message: 'Success', token: token })
+                return res.status(200).json({ message: 'Success', token: token })
             }
         }
     } catch (error) {
