@@ -5,7 +5,7 @@ import { transporter } from "../../libs/nodemailer.js";
 
 export const login = async (req, res, next) => {
     try {
-        const { email, userName, password } = req.body
+        const { email, password } = req.body
         if (email !== undefined && email.length > 0 && password.length > 0) {
             const user = await User.findOne({ email })
             if (!user) {
@@ -23,27 +23,6 @@ export const login = async (req, res, next) => {
             //     sameSite: 'none',
             //     secure: true,
             // }))
-            res.status(200).json({ message: 'Success', token: token })
-            await user.save()
-        }
-
-        if (userName !== undefined && userName.length > 0 && password.length > 0) {
-            const user = await User.findOne({ userName })
-            if (!user) {
-                throw new Error("No se encontró el usuario");
-            }
-            const passwordFromLogin = await user.validatePassword(password)
-            if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
-            user.online = true
-            const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
-                expiresIn: 1815000000
-            })
-            // res.cookie('authtoken', token, {
-            //     maxAge: 1815000000, //21 days
-            //     httpOnly: true, 
-            //     sameSite: 'none',
-            //     secure: true,
-            // })
             res.status(200).json({ message: 'Success', token: token })
             await user.save()
         }
@@ -68,7 +47,7 @@ export const logout = async (req, res, next) => {
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
-        next()
+        next(error)
     }
 }
 
