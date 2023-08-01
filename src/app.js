@@ -21,7 +21,7 @@ const errorHandler = (error, req, res, next) => {
 };
 
 var corsOptions = {
-    origin: ['*'],
+    origin: '*',
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: [

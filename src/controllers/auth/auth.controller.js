@@ -23,6 +23,7 @@ export const login = async (req, res, next) => {
             //     sameSite: 'none',
             //     secure: true,
             // }))
+            console.log({ message: 'Success', token: token })
             res.status(200).json({ message: 'Success', token: token })
             await user.save()
         }
