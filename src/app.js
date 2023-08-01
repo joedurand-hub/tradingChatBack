@@ -14,17 +14,14 @@ dotenv.config()
 // Inicialization
 const app = express()
 
-const errorHandler = (error, req, res) => {
-    console.error(error);
-    const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-    res.status(statusCode).json({
-        message: "Algo ha salido mal",
-        error: error.message || "Error desconocido",
-    });
+const errorHandler = (error, req, res, next) => {
+    console.log(error)
+    res.status(500).json(`Algo ha salido mal: ${error}`)
+    next()
 };
 
 var corsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'https://64c88b100daa69000719d0a7--beamish-taffy-b5d756.netlify.app/', 'https://main--beamish-taffy-b5d756.netlify.app/'],
+    origin: ['*'],
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
@@ -59,7 +56,6 @@ app.use(adminRoute)
 app.use(authRoute)
 app.use(chatRoute)
 app.use(messageRoute)
-app.use(errorHandler)
 
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
