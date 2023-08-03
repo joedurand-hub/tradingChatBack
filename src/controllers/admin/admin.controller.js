@@ -4,18 +4,14 @@ import { transporter } from "../../libs/nodemailer.js";
 
 export const signup = async (req, res, next) => {
     try {
-        const { email, userName, password, } = req.body
-        const userNameExist = await User.findOne({ userName })
-        if (userNameExist) {
-            return res.json({ message: "The username is already in use." })
-        }
+        const { email, password, } = req.body
         const emailExist = await User.findOne({ email })
         if (emailExist) {
             return res.json({ message: "The email is already in use." })
         }
         else {
             if (password.length >= 6 && password.length < 16) {
-                const user = new User({ userName, password, email })
+                const user = new User({ password, email })
                 user.password = await user.encryptPassword(user.password)
                 const userSaved = await user.save()
                 const token = jwt.sign({ _id: userSaved._id }, `${process.env.TOKEN_KEY_JWT}`, {
@@ -29,13 +25,13 @@ export const signup = async (req, res, next) => {
                 //     sameSite: 'none',
                 //     secure: true,
                 // })
-                await transporter.sendMail({
-                    from: 'chatappco@gmail.com', // sender address
-                    to: `${email}`, // list of receivers
-                    subject: `Hola ${userName}, registro exitoso!`, // Subject line
-                    text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand.", // plain text body
-                    // html: "<b>Hello world?</b>", // html body
-                });
+                // await transporter.sendMail({
+                //     from: 'chatappco@gmail.com', // sender address
+                //     to: `${email}`, // list of receivers
+                //     subject: `Hola ${email}, registro exitoso!`, // Subject line
+                //     text: "Has sido registrado con éxito!", // plain text body
+                //     // html: "<b>Hello world?</b>", // html body
+                // });
                 console.log(user)
                 return res.status(200).json({ message: 'Success', token: token })
             }

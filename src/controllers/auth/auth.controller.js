@@ -6,6 +6,7 @@ import { transporter } from "../../libs/nodemailer.js";
 export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body
+        console.log(email, password)
         if (email !== undefined && email.length > 0 && password.length > 0) {
             const user = await User.findOne({ email })
             if (!user) {

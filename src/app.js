@@ -39,7 +39,6 @@ var corsOptions = {
 
 
 // Settings
-app.use(errorHandler);
 app.set('port', process.env.PORT || 8080)
 
 // Middlewares
@@ -56,6 +55,7 @@ app.use(adminRoute)
 app.use(authRoute)
 app.use(chatRoute)
 app.use(messageRoute)
+app.use(errorHandler);
 
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
