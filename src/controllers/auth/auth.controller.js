@@ -6,7 +6,7 @@ import { transporter } from "../../libs/nodemailer.js";
 export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body
-        console.log(email, password)
+        
         if (email !== undefined && email.length > 0 && password.length > 0) {
             const user = await User.findOne({ email })
             if (!user) {
@@ -14,25 +14,18 @@ export const login = async (req, res, next) => {
             }
             const passwordFromLogin = await user.validatePassword(password)
             if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
-            user.online = true
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
-            // res.setHeader('Set-cookie', serialize("authtoken", token, {
-            //     maxAge: 1815000000, //21 days
-            //     httpOnly: true, 
-            //     sameSite: 'none',
-            //     secure: true,
-            // }))
-            console.log({ message: 'Success', token: token })
-            res.status(200).json({ message: 'Success', token: token })
+            console.log({ message: 'Success', token: token, role: user.role })
+            res.status(200).json({ message: 'Success', token: token, role: user.role })
             await user.save()
         }
 
     } catch (error) {
         console.log("error:", error)
         res.status(400).json(error)
-        next()
+        next(error)
     }
 }
 

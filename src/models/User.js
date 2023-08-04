@@ -13,6 +13,10 @@ const userSchema = new Schema({
     requiered: [true, 'Please enter a password'],
     minlength: 6,
   },
+  role: {
+    type: String,
+    default: "user"
+  },
   chat: [
     {
       type: Schema.Types.ObjectId,
