@@ -17,7 +17,7 @@ const app = express()
 const errorHandler = (error, req, res, next) => {
     console.log(error)
     res.status(500).json(`Algo ha salido mal: ${error}`)
-    next()
+    next(error)
 };
 
 var corsOptions = {

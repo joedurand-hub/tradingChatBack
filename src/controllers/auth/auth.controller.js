@@ -18,7 +18,7 @@ export const login = async (req, res, next) => {
                 expiresIn: 1815000000
             })
             console.log({ message: 'Success', token: token, role: user.role })
-            res.status(200).json({ message: 'Success', token: token, role: user.role })
+            res.status(200).json({ message: 'Success', token: token, role: user.role, email: user.email })
             await user.save()
         }
 

@@ -4,16 +4,15 @@ import { transporter } from "../../libs/nodemailer.js";
 
 export const signup = async (req, res, next) => {
     try {
-        const { email, password, } = req.body
+        const { email, password, role } = req.body
         const emailExist = await User.findOne({ email })
         if (emailExist) {
-            return res.status(400).json({ message: "The email is already in use." })
+            return res.status(400).json("The email is already in use")
         }
         else {
             if (password.length >= 6 && password.length < 16) {
-                const user = new User({ password, email })
+                const user = new User({ password, email, role })
                 user.password = await user.encryptPassword(user.password)
-                user.role = "admin"
                 const userSaved = await user.save()
                 const token = jwt.sign({ _id: userSaved._id }, `${process.env.TOKEN_KEY_JWT}`, {
                     expiresIn: 1815000000
@@ -35,10 +34,24 @@ export const signup = async (req, res, next) => {
     }
 }
 
+export const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params.id
+        const user = await User.find({_id: id})
+        console.log(user)
+        res.status(200).json({message: "Usuario eliminado", user})
+    } catch (error) {
+        console.log("error:", error)
+        res.status(400).json(error)
+        next(error)
+    }
+}
+
 
 export const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find()
+        console.log(users)
         res.status(200).json(users)
     } catch (error) {
         console.log("error:", error)
