@@ -1,5 +1,6 @@
 import express from "express"
 import path from 'path'
+import http from "http"
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser"
 import morgan from 'morgan'
@@ -9,15 +10,28 @@ import authRoute from './routes/auth.routes.js'
 import chatRoute from './routes/chat.routes.js'
 import messageRoute from './routes/messages.routes.js'
 
+import { Server as SocketServer } from "socket.io"
 dotenv.config()
 
 // Inicialization
 const app = express()
+const server = http.createServer(app)
+
+// export instance for new sockets in endpoints
+const io = new SocketServer(server, {
+    cors: {
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true,
+        optionsSuccessStatus: 200,
+
+    }
+})
 
 const errorHandler = (error, req, res, next) => {
     console.log(error)
     res.status(500).json(`Algo ha salido mal: ${error}`)
-    next(error)
+    next()
 };
 
 var corsOptions = {
@@ -63,4 +77,29 @@ app.use('/uploads', express.static(path.resolve('uploads')));
 // app.use(express.static(path.join(__dirname, 'public')))
 
 
-export default app;
+
+
+
+
+global.onlineUsers = new Map()
+
+io.on('connection', (socket) => { // conexión del WebSocket.
+    global.chatSocket = socket
+    
+    socket.on("enviar-mensaje", (message) => {
+        console.log(message, socket.id)
+
+        socket.broadcast.emit("mensaje-desde-server", message) //manda a todos menos a mi
+    })
+    socket.on("escribiendo", () => {
+
+        socket.broadcast.emit("escribiendo-desde-server") //manda a todos menos a mi
+    })
+
+    socket.on('disconnect', () => {
+        console.log('Cliente desconectado:', socket.id);
+    });
+})
+
+
+export default server;
