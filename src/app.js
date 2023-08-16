@@ -8,6 +8,7 @@ import cors from 'cors'
 import adminRoute from './routes/admin.routes.js'
 import authRoute from './routes/auth.routes.js'
 import chatRoute from './routes/chat.routes.js'
+import chatGeneralRoute from './routes/chat-general.routes.js'
 import messageRoute from './routes/messages.routes.js'
 
 import { Server as SocketServer } from "socket.io"
@@ -68,6 +69,7 @@ app.use(express.json({ limit: "150mb" }));
 app.use(adminRoute)
 app.use(authRoute)
 app.use(chatRoute)
+app.use(chatGeneralRoute)
 app.use(messageRoute)
 app.use(errorHandler);
 
